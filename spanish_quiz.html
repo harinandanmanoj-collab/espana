@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EspañolMaster — Spanish MCQ Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0eb;
+  --bg2: #ede8e1;
+  --surface: #ffffff;
+  --surface2: #faf7f4;
+  --border: #e0d8cf;
+  --text: #1a1510;
+  --text2: #6b5f52;
+  --text3: #9b8f82;
+  --accent: #c84b31;
+  --accent2: #e8734a;
+  --gold: #d4a843;
+  --green: #2d7d52;
+  --green-bg: #eaf5ee;
+  --red: #c84b31;
+  --red-bg: #fef0ec;
+  --blue: #2356a8;
+  --blue-bg: #eef3fc;
+  --shadow: 0 2px 12px rgba(26,21,16,0.08);
+  --shadow-lg: 0 8px 40px rgba(26,21,16,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+[data-theme="dark"] {
+  --bg: #141210;
+  --bg2: #1c1917;
+  --surface: #252220;
+  --surface2: #2d2a27;
+  --border: #3a3530;
+  --text: #f0ebe4;
+  --text2: #b5a99c;
+  --text3: #7a6e62;
+  --accent: #e86844;
+  --accent2: #f0855e;
+  --green: #48b87a;
+  --green-bg: #1a3328;
+  --red: #e86844;
+  --red-bg: #3a1f17;
+  --blue: #5b8de8;
+  --blue-bg: #1a2540;
+  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background 0.3s,color 0.3s;overflow-x:hidden}
+
+/* LAYOUT */
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:all 0.3s;flex-shrink:0}
+.sidebar.collapsed{width:0;border-right:none}
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+
+/* SIDEBAR */
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.logo-text{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--text)}
+.logo-sub{font-size:11px;color:var(--text3);margin-top:-2px}
+.sidebar-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat-mini{background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;text-align:center}
+.stat-mini-val{font-size:18px;font-weight:600;color:var(--accent)}
+.stat-mini-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 12px}
+.nav-section-title{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);padding:12px 8px 6px;font-weight:600}
+.nav-btn{width:100%;text-align:left;padding:10px 12px;border:none;background:transparent;border-radius:var(--radius-sm);cursor:pointer;color:var(--text2);font-size:13px;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all 0.2s;font-weight:500}
+.nav-btn:hover{background:var(--bg2);color:var(--text)}
+.nav-btn.active{background:var(--red-bg);color:var(--accent);font-weight:600}
+.nav-btn .cat-icon{font-size:16px;width:22px;text-align:center}
+.nav-btn .cat-count{margin-left:auto;font-size:11px;background:var(--bg2);color:var(--text3);padding:2px 7px;border-radius:20px}
+.nav-btn.active .cat-count{background:var(--accent);color:white}
+.sidebar-footer{padding:12px;border-top:1px solid var(--border)}
+.streak-banner{background:linear-gradient(135deg,#ff6b35,#f7931e);border-radius:var(--radius-sm);padding:12px;color:white;text-align:center}
+.streak-num{font-size:28px;font-weight:700;font-family:'Fraunces',serif}
+.streak-label{font-size:11px;opacity:0.9;margin-top:-2px}
+
+/* TOP BAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.menu-btn{width:36px;height:36px;background:var(--bg2);border:none;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all 0.2s;font-size:16px}
+.menu-btn:hover{background:var(--border);color:var(--text)}
+.topbar-title{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--text)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.points-badge{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;color:var(--gold)}
+.theme-btn{width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:16px;transition:all 0.2s}
+.theme-btn:hover{background:var(--border)}
+.search-btn{width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:16px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;color:var(--text2)}
+.search-btn:hover{background:var(--border)}
+
+/* CONTENT */
+.content{flex:1;padding:24px;max-width:780px;margin:0 auto;width:100%}
+
+/* DASHBOARD */
+.dashboard-hero{background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);border-radius:24px;padding:32px;color:white;margin-bottom:24px;position:relative;overflow:hidden}
+.dashboard-hero::before{content:'🇪🇸';position:absolute;right:-10px;top:-10px;font-size:100px;opacity:0.15;transform:rotate(-15deg)}
+.hero-title{font-family:'Fraunces',serif;font-size:28px;font-weight:700;margin-bottom:6px}
+.hero-sub{font-size:14px;opacity:0.85;margin-bottom:24px}
+.hero-modes{display:flex;gap:10px;flex-wrap:wrap}
+.mode-btn{padding:10px 20px;border:2px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.15);border-radius:12px;color:white;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif;backdrop-filter:blur(10px)}
+.mode-btn:hover,.mode-btn.active{background:rgba(255,255,255,0.3);border-color:white;transform:translateY(-1px)}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;transition:all 0.2s;cursor:default}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.stat-val{font-size:28px;font-weight:700;font-family:'Fraunces',serif;color:var(--text)}
+.stat-label{font-size:12px;color:var(--text3);margin-top:4px;font-weight:500}
+.stat-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;margin-top:6px;font-weight:600}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-red{background:var(--red-bg);color:var(--red)}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}
+.badge-gold{background:#fef9ec;color:var(--gold)}
+
+.section-title{font-family:'Fraunces',serif;font-size:18px;font-weight:600;margin-bottom:14px;color:var(--text)}
+.category-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px}
+.cat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+.cat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--accent)}
+.cat-card-icon{font-size:28px;margin-bottom:8px}
+.cat-card-name{font-weight:600;font-size:14px;color:var(--text);margin-bottom:4px}
+.cat-card-count{font-size:12px;color:var(--text3)}
+.cat-card-progress{height:4px;background:var(--bg2);border-radius:2px;margin-top:10px;overflow:hidden}
+.cat-card-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width 0.6s ease}
+.cat-card-pct{position:absolute;top:14px;right:14px;font-size:11px;font-weight:600;color:var(--text3)}
+
+/* QUIZ */
+.quiz-container{max-width:680px;margin:0 auto}
+.quiz-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap}
+.quiz-back{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 16px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:6px;transition:all 0.2s}
+.quiz-back:hover{background:var(--bg2);color:var(--text)}
+.quiz-info{flex:1}
+.quiz-cat{font-size:12px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
+.quiz-num{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--text)}
+.quiz-actions{display:flex;gap:8px}
+.icon-btn{width:34px;height:34px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.icon-btn:hover{background:var(--bg2)}
+.icon-btn.bookmarked{background:var(--gold);border-color:var(--gold);color:white}
+
+.progress-track{background:var(--bg2);border-radius:4px;height:6px;margin-bottom:24px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width 0.5s ease}
+
+.question-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px;margin-bottom:16px;box-shadow:var(--shadow);animation:slideUp 0.3s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.question-text{font-size:17px;line-height:1.65;color:var(--text);font-weight:500;margin-bottom:28px}
+.options-grid{display:grid;gap:10px}
+.option-btn{width:100%;text-align:left;padding:14px 18px;border:2px solid var(--border);background:var(--surface2);border-radius:14px;cursor:pointer;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);transition:all 0.2s;display:flex;align-items:center;gap:12px;font-weight:500;position:relative;overflow:hidden}
+.option-btn::before{content:'';position:absolute;inset:0;background:var(--accent);opacity:0;transition:opacity 0.2s}
+.option-btn:hover:not(.revealed){border-color:var(--accent);background:var(--red-bg);transform:translateX(4px)}
+.option-letter{width:28px;height:28px;background:var(--bg2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all 0.2s;color:var(--text3)}
+.option-btn:hover:not(.revealed) .option-letter{background:var(--accent);color:white}
+.option-btn.correct{border-color:var(--green);background:var(--green-bg);transform:translateX(0)!important;animation:pulse-green 0.4s ease}
+.option-btn.correct .option-letter{background:var(--green);color:white}
+.option-btn.wrong{border-color:var(--red);background:var(--red-bg);animation:shake 0.4s ease}
+.option-btn.wrong .option-letter{background:var(--red);color:white}
+.option-btn.dimmed{opacity:0.5}
+.option-btn.revealed{cursor:default}
+@keyframes pulse-green{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+.feedback-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;animation:slideUp 0.3s ease}
+.feedback-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.feedback-icon{font-size:20px}
+.feedback-title{font-weight:600;font-size:15px}
+.feedback-correct{color:var(--green)}
+.feedback-wrong{color:var(--red)}
+.explanation{font-size:13px;line-height:1.7;color:var(--text2);background:var(--bg2);border-radius:10px;padding:14px;border-left:3px solid var(--accent)}
+
+.quiz-nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.nav-primary{padding:14px 28px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.nav-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(200,75,49,0.35)}
+.nav-secondary{padding:14px 20px;background:var(--surface);border:1px solid var(--border);color:var(--text2);border-radius:14px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.nav-secondary:hover{background:var(--bg2);color:var(--text)}
+.skip-btn{padding:10px 16px;background:transparent;border:1px solid var(--border);color:var(--text3);border-radius:10px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.skip-btn:hover{background:var(--bg2);color:var(--text2)}
+
+/* RESULTS */
+.results-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:36px;text-align:center;margin-bottom:20px;box-shadow:var(--shadow)}
+.results-emoji{font-size:56px;margin-bottom:16px}
+.results-title{font-family:'Fraunces',serif;font-size:28px;font-weight:700;color:var(--text);margin-bottom:8px}
+.results-sub{font-size:15px;color:var(--text2);margin-bottom:28px}
+.results-score{display:inline-flex;align-items:center;justify-content:center;width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:28px;font-weight:700;font-family:'Fraunces',serif;margin-bottom:24px;box-shadow:0 8px 24px rgba(200,75,49,0.3)}
+.results-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+.res-stat{background:var(--bg2);border-radius:14px;padding:16px;text-align:center}
+.res-stat-val{font-size:22px;font-weight:700;font-family:'Fraunces',serif;color:var(--text)}
+.res-stat-label{font-size:11px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px}
+.results-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.res-btn{padding:13px 22px;border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.res-btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none}
+.res-btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(200,75,49,0.35)}
+.res-btn-secondary{background:var(--surface);border:1px solid var(--border);color:var(--text2)}
+.res-btn-secondary:hover{background:var(--bg2);color:var(--text)}
+
+/* SEARCH */
+.search-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:80px 20px;backdrop-filter:blur(4px);animation:fadeIn 0.2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.search-modal{background:var(--surface);border-radius:20px;width:100%;max-width:600px;overflow:hidden;box-shadow:var(--shadow-lg)}
+.search-input-wrap{display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);gap:12px}
+.search-input{flex:1;border:none;background:transparent;font-size:16px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none}
+.search-input::placeholder{color:var(--text3)}
+.search-results{max-height:400px;overflow-y:auto}
+.search-result-item{padding:14px 20px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.15s}
+.search-result-item:hover{background:var(--bg2)}
+.search-result-q{font-size:13px;color:var(--text);font-weight:500;margin-bottom:4px}
+.search-result-cat{font-size:11px;color:var(--text3)}
+.no-results{padding:32px;text-align:center;color:var(--text3);font-size:14px}
+
+/* BADGES */
+.badges-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.badge-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center;transition:all 0.2s}
+.badge-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.badge-card.unlocked{border-color:var(--gold)}
+.badge-icon{font-size:32px;margin-bottom:8px;filter:grayscale(1);transition:filter 0.3s}
+.badge-card.unlocked .badge-icon{filter:none}
+.badge-name{font-size:12px;font-weight:600;color:var(--text2)}
+.badge-desc{font-size:10px;color:var(--text3);margin-top:3px}
+
+/* CONFETTI */
+.confetti-piece{position:fixed;width:10px;height:10px;top:-10px;animation:fall linear forwards;pointer-events:none;z-index:999;border-radius:2px}
+@keyframes fall{to{top:110vh;transform:rotate(720deg) translateX(var(--drift))}}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 20px;font-size:14px;font-weight:500;box-shadow:var(--shadow-lg);z-index:200;animation:toastIn 0.3s ease;display:flex;align-items:center;gap:10px}
+@keyframes toastIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* PROGRESS */
+.weak-topics{margin-bottom:24px}
+.weak-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;transition:all 0.2s;cursor:pointer}
+.weak-item:hover{transform:translateX(4px);border-color:var(--accent)}
+.weak-cat{flex:1;font-size:13px;font-weight:500;color:var(--text)}
+.weak-acc{font-size:12px;color:var(--text3)}
+.weak-bar-wrap{width:80px;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.weak-bar{height:100%;border-radius:3px;transition:width 0.5s ease}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{position:fixed;left:0;top:0;height:100%;z-index:50;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar.collapsed{transform:translateX(-100%);width:280px}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .category-grid{grid-template-columns:1fr}
+  .badges-grid{grid-template-columns:repeat(2,1fr)}
+  .results-stats{grid-template-columns:repeat(3,1fr)}
+  .content{padding:16px}
+  .question-card{padding:22px}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-modes{gap:6px}
+  .mode-btn{padding:8px 14px;font-size:12px}
+}
+
+/* MODE SELECTOR */
+.mode-selector{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:20px}
+.mode-selector-title{font-family:'Fraunces',serif;font-size:18px;font-weight:600;margin-bottom:6px}
+.mode-selector-sub{font-size:13px;color:var(--text3);margin-bottom:20px}
+.mode-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.mode-card{padding:18px;border:2px solid var(--border);border-radius:14px;cursor:pointer;transition:all 0.2s;background:var(--surface2)}
+.mode-card:hover{border-color:var(--accent);background:var(--red-bg)}
+.mode-card.selected{border-color:var(--accent);background:var(--red-bg)}
+.mode-card-icon{font-size:24px;margin-bottom:8px}
+.mode-card-name{font-weight:600;font-size:14px;color:var(--text)}
+.mode-card-desc{font-size:12px;color:var(--text3);margin-top:4px}
+.start-quiz-btn{width:100%;margin-top:16px;padding:15px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.start-quiz-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,75,49,0.35)}
+
+.test-warning{background:var(--blue-bg);border:1px solid var(--blue);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--blue);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">🇪🇸</div>
+        <div>
+          <div class="logo-text">EspañolMaster</div>
+          <div class="logo-sub">183 Questions</div>
+        </div>
+      </div>
+      <div class="sidebar-stats">
+        <div class="stat-mini"><div class="stat-mini-val" id="sb-total">0</div><div class="stat-mini-label">Answered</div></div>
+        <div class="stat-mini"><div class="stat-mini-val" id="sb-acc">—</div><div class="stat-mini-label">Accuracy</div></div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Modes</div>
+      <button class="nav-btn active" id="nav-dashboard" onclick="showView('dashboard')">
+        <span class="cat-icon">🏠</span> Dashboard
+      </button>
+      <button class="nav-btn" id="nav-quiz" onclick="showView('mode-select')">
+        <span class="cat-icon">⚡</span> Quick Quiz
+      </button>
+      <button class="nav-btn" id="nav-daily" onclick="startDaily()">
+        <span class="cat-icon">📅</span> Daily Practice
+      </button>
+      <button class="nav-btn" id="nav-wrong" onclick="startWrong()">
+        <span class="cat-icon">🔄</span> Retry Wrong
+        <span class="cat-count" id="wrong-count">0</span>
+      </button>
+      <button class="nav-btn" id="nav-bookmarks" onclick="startBookmarks()">
+        <span class="cat-icon">🔖</span> Bookmarks
+        <span class="cat-count" id="bm-count">0</span>
+      </button>
+      <div class="nav-section-title">Categories</div>
+      <div id="cat-nav"></div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="streak-banner">
+        <div class="streak-num" id="streak-num">0🔥</div>
+        <div class="streak-label">Day Streak</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-right">
+        <div class="points-badge">⭐ <span id="points-display">0</span></div>
+        <button class="search-btn" onclick="toggleSearch()">🔍</button>
+        <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <!-- DASHBOARD VIEW -->
+      <div id="view-dashboard">
+        <div class="dashboard-hero">
+          <div class="hero-title">¡Hola! Ready to practice? 🎉</div>
+          <div class="hero-sub">183 questions across 8 categories. Pick a mode and start learning.</div>
+          <div class="hero-modes">
+            <button class="mode-btn" onclick="startQuiz('practice','all')">⚡ Quick Practice</button>
+            <button class="mode-btn" onclick="startQuiz('test','all')">📝 Full Test</button>
+            <button class="mode-btn" onclick="startDaily()">📅 Daily 10</button>
+            <button class="mode-btn" onclick="startWrong()">🔄 Retry Wrong</button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-val" id="stat-answered">0</div>
+            <div class="stat-label">Total Answered</div>
+            <div class="stat-badge badge-blue">All Time</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-accuracy">—</div>
+            <div class="stat-label">Accuracy</div>
+            <div class="stat-badge badge-green" id="acc-badge">Keep going!</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-points">0</div>
+            <div class="stat-label">Points</div>
+            <div class="stat-badge badge-gold">⭐ Earned</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-streak">0🔥</div>
+            <div class="stat-label">Streak</div>
+            <div class="stat-badge badge-red">Days</div>
+          </div>
+        </div>
+
+        <div class="section-title">Categories</div>
+        <div class="category-grid" id="category-grid"></div>
+
+        <div class="section-title">Weak Topics</div>
+        <div class="weak-topics" id="weak-topics-list"></div>
+
+        <div class="section-title">Achievements</div>
+        <div class="badges-grid" id="badges-grid"></div>
+      </div>
+
+      <!-- MODE SELECT VIEW -->
+      <div id="view-mode-select" style="display:none">
+        <div class="mode-selector">
+          <div class="mode-selector-title">Choose Quiz Mode</div>
+          <div class="mode-selector-sub">Select how you want to practice</div>
+          <div class="mode-cards">
+            <div class="mode-card selected" id="mc-practice" onclick="selectMode('practice')">
+              <div class="mode-card-icon">⚡</div>
+              <div class="mode-card-name">Practice Mode</div>
+              <div class="mode-card-desc">See answers instantly, learn as you go</div>
+            </div>
+            <div class="mode-card" id="mc-test" onclick="selectMode('test')">
+              <div class="mode-card-icon">📝</div>
+              <div class="mode-card-name">Test Mode</div>
+              <div class="mode-card-desc">Answer all, see results at the end</div>
+            </div>
+          </div>
+          <button class="start-quiz-btn" onclick="launchSelectedQuiz()">Start Quiz →</button>
+        </div>
+
+        <div class="section-title">By Category</div>
+        <div class="category-grid" id="cat-select-grid"></div>
+      </div>
+
+      <!-- QUIZ VIEW -->
+      <div id="view-quiz" style="display:none">
+        <div class="quiz-container">
+          <div class="quiz-header">
+            <button class="quiz-back" onclick="showView('dashboard')">← Back</button>
+            <div class="quiz-info">
+              <div class="quiz-cat" id="quiz-cat-label"></div>
+              <div class="quiz-num" id="quiz-num-label"></div>
+            </div>
+            <div class="quiz-actions">
+              <button class="icon-btn" id="bookmark-btn" onclick="toggleBookmark()" title="Bookmark">🔖</button>
+            </div>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="quiz-progress"></div></div>
+          <div id="test-warning" class="test-warning" style="display:none">📝 <strong>Test Mode</strong> — answers revealed at the end</div>
+          <div class="question-card" id="question-card">
+            <div class="question-text" id="question-text"></div>
+            <div class="options-grid" id="options-grid"></div>
+          </div>
+          <div id="feedback-area"></div>
+          <div class="quiz-nav">
+            <button class="nav-secondary" id="prev-btn" onclick="prevQ()">← Prev</button>
+            <button class="skip-btn" id="skip-btn" onclick="skipQ()">Skip</button>
+            <button class="nav-primary" id="next-btn" onclick="nextQ()">Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTS VIEW -->
+      <div id="view-results" style="display:none">
+        <div class="quiz-container">
+          <div class="results-card">
+            <div class="results-emoji" id="results-emoji">🎉</div>
+            <div class="results-score" id="results-score">0%</div>
+            <div class="results-title" id="results-title">Quiz Complete!</div>
+            <div class="results-sub" id="results-sub"></div>
+            <div class="results-stats">
+              <div class="res-stat"><div class="res-stat-val" id="r-correct">0</div><div class="res-stat-label">Correct</div></div>
+              <div class="res-stat"><div class="res-stat-val" id="r-wrong">0</div><div class="res-stat-label">Wrong</div></div>
+              <div class="res-stat"><div class="res-stat-val" id="r-points">+0</div><div class="res-stat-label">Points</div></div>
+            </div>
+            <div class="results-actions">
+              <button class="res-btn res-btn-primary" onclick="retryWrong()">🔄 Retry Wrong</button>
+              <button class="res-btn res-btn-secondary" onclick="showView('dashboard')">🏠 Dashboard</button>
+              <button class="res-btn res-btn-secondary" onclick="startQuiz(currentMode,'all')">🔀 New Quiz</button>
+            </div>
+          </div>
+
+          <!-- Review in test mode -->
+          <div id="review-section"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="search-overlay" style="display:none" onclick="closeSearch(event)">
+  <div class="search-modal">
+    <div class="search-input-wrap">
+      <span>🔍</span>
+      <input type="text" class="search-input" id="search-input" placeholder="Search questions..." oninput="searchQuestions(this.value)" autofocus>
+      <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px" onclick="toggleSearch()">✕</button>
+    </div>
+    <div class="search-results" id="search-results">
+      <div class="no-results">Start typing to search 183 questions...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [{"id":1,"category":"Articles","question":"Choose the correct indefinite article: Quiero comprar ___ coche.","options":["El","La","Un","Los"],"correctAnswer":2,"correctLetter":"C","explanation":"'Coche' is masculine singular, so the indefinite article is 'un'."},{"id":2,"category":"Articles","question":"Choose the correct indefinite article for the noun 'libro' (book) in Spanish.","options":["una","un","unos","unas"],"correctAnswer":1,"correctLetter":"B","explanation":"'Libro' is masculine singular → 'un libro'."},{"id":3,"category":"Articles","question":"Choose the correct option: ___ agua fría es buena para la salud.","options":["la","el","una","unas"],"correctAnswer":1,"correctLetter":"B","explanation":"'Agua' is feminine but starts with a stressed 'a', so it takes the masculine article 'el' in singular."},{"id":4,"category":"Articles","question":"___ manzanas están muy rojas hoy.","options":["El","Las","Los","Una"],"correctAnswer":1,"correctLetter":"B","explanation":"'Manzanas' is feminine plural → 'Las'."},{"id":5,"category":"Articles","question":"Fill in the blank: ___ sol brilla en ___ cielo.","options":["El / el","La / la","Un / una","El / la"],"correctAnswer":0,"correctLetter":"A","explanation":"Both 'sol' and 'cielo' are masculine → 'El sol brilla en el cielo'."},{"id":6,"category":"Articles","question":"___ estudiantes están en clase.","options":["el","la","los","una"],"correctAnswer":2,"correctLetter":"C","explanation":"'Estudiantes' is masculine plural → 'los'."},{"id":7,"category":"Articles","question":"Choose the correct article: ___ águila vuela alto.","options":["la","el","una","unas"],"correctAnswer":1,"correctLetter":"B","explanation":"'Águila' is feminine but begins with stressed 'a', so it takes 'el' in singular."},{"id":8,"category":"Articles","question":"___ mesa tiene ___ caramelos.","options":["El / los","La / los","La / las","El / las"],"correctAnswer":1,"correctLetter":"B","explanation":"'Mesa' is feminine → 'La'; 'caramelos' is masculine plural → 'los'."},{"id":9,"category":"Articles","question":"___ coche es muy rápido.","options":["La","El","Una","Los"],"correctAnswer":1,"correctLetter":"B","explanation":"'Coche' is masculine singular → 'El'."},{"id":10,"category":"Articles","question":"___ mamá y ___ papá están en ___ piso.","options":["La / el / el","El / la / la","La / la / el","El / el / la"],"correctAnswer":0,"correctLetter":"A","explanation":"'Mamá' is feminine → 'la'; 'papá' is masculine → 'el'; 'piso' is masculine → 'el'."},{"id":11,"category":"Articles","question":"Choose the correct article: ___ libro","options":["un","una","unos","unas"],"correctAnswer":0,"correctLetter":"A","explanation":"'Libro' is masculine singular → indefinite article 'un'."},{"id":12,"category":"Articles","question":"\"Las casas en esta calle son muy ____.\"","options":["Blanco","Blanca","Blancos","Blancas"],"correctAnswer":3,"correctLetter":"D","explanation":"Adjectives must agree with the noun. 'Casas' is feminine plural → 'blancas'."},{"id":13,"category":"Pronouns","question":"What is the Spanish subject pronoun for 'they' (mixed or masculine group)?","options":["Ellas","Ustedes","Ellos","Nosotros"],"correctAnswer":2,"correctLetter":"C","explanation":"'Ellos' is used for masculine or mixed-gender groups; 'ellas' is for all-female groups."},{"id":14,"category":"Pronouns","question":"In Spain, which pronoun is used as the informal plural 'you' for a group of females?","options":["Ustedes","Ellas","Vosotras","Nosotras"],"correctAnswer":2,"correctLetter":"C","explanation":"'Vosotras' is the feminine form of 'vosotros', used in Spain for an all-female group."},{"id":15,"category":"Pronouns","question":"Which sentence uses the correct indirect object pronoun? 'I give the book to her.'","options":["Yo le doy el libro.","Yo la doy el libro.","Yo lo doy el libro.","Yo se doy el libro."],"correctAnswer":0,"correctLetter":"A","explanation":"The indirect object pronoun for 'her' is 'le'. 'La' is a direct object pronoun."},{"id":16,"category":"Pronouns","question":"Which sentence correctly uses the indirect object pronoun? 'We tell him the truth.'","options":["Nosotros le decimos la verdad.","Nosotros lo decimos la verdad.","Nosotros la decimos la verdad.","Nosotros se decimos la verdad."],"correctAnswer":0,"correctLetter":"A","explanation":"Indirect object pronoun for 'him' is 'le'."},{"id":17,"category":"Pronouns","question":"Which sentence correctly describes what 'you' (tú) think?","options":["Tú pensas que el libro es bueno.","Tú piensas que el libro es bueno.","Tú pienso que el libro es bueno.","Tú pensen que el libro es bueno."],"correctAnswer":1,"correctLetter":"B","explanation":"The correct stem-changing conjugation of 'pensar' for tú is 'piensas'."},{"id":18,"category":"Pronouns","question":"Yo ___ Dora.","options":["soy","tu","ella","ellas"],"correctAnswer":0,"correctLetter":"A","explanation":"First person singular of 'ser' is 'soy'."},{"id":19,"category":"Pronouns","question":"Mis amigos ___ muy simpáticos.","options":["Es","Está","Hay","Son"],"correctAnswer":3,"correctLetter":"D","explanation":"'Amigos' is third person plural → 'son' (from ser)."},{"id":20,"category":"Pronouns","question":"Ella ___ cansada.","options":["soy","estás","está","estamos"],"correctAnswer":2,"correctLetter":"C","explanation":"Third person singular of 'estar' is 'está'. Tiredness is a temporary state."},{"id":21,"category":"Prepositions","question":"Voy ___ mercado esta tarde.","options":["a el","al","del","el"],"correctAnswer":1,"correctLetter":"B","explanation":"'A + el' contracts to 'al' in Spanish. 'Voy al mercado'."},{"id":22,"category":"Prepositions","question":"El libro está ___ la mesa.","options":["en","de","por","para"],"correctAnswer":0,"correctLetter":"A","explanation":"'En' is used to indicate location: 'The book is on the table'."},{"id":23,"category":"Prepositions","question":"Vengo ___ España.","options":["a","en","de","por"],"correctAnswer":2,"correctLetter":"C","explanation":"'De' indicates origin: 'I come from Spain'."},{"id":24,"category":"Prepositions","question":"Voy ___ la tienda ___ comprar leche.","options":["a / por","en / para","a / para","de / a"],"correctAnswer":2,"correctLetter":"C","explanation":"'A' indicates direction; 'para' indicates purpose: 'I go to the store to buy milk'."},{"id":25,"category":"Prepositions","question":"Estudio ___ la mañana.","options":["por","para","de","en"],"correctAnswer":0,"correctLetter":"A","explanation":"'Por' is used with parts of the day: 'por la mañana' (in the morning)."},{"id":26,"category":"Prepositions","question":"¿Cuánto pagaste ___ ese libro?","options":["para","por","de","en"],"correctAnswer":1,"correctLetter":"B","explanation":"'Por' expresses exchange: 'How much did you pay for that book?'"},{"id":27,"category":"Prepositions","question":"Este regalo es ___ ti.","options":["por","para","de","en"],"correctAnswer":1,"correctLetter":"B","explanation":"'Para' is used to express recipient: 'This gift is for you'."},{"id":28,"category":"Prepositions","question":"La farmacia está ___ el banco.","options":["entre","detrás","cerca de","al lado de"],"correctAnswer":3,"correctLetter":"D","explanation":"'Al lado de' means 'next to'. The pharmacy is next to the bank."},{"id":29,"category":"Prepositions","question":"Hablan ___ el teléfono.","options":["en","por","de","a"],"correctAnswer":1,"correctLetter":"B","explanation":"'Por' is used for means of communication: 'They speak by phone'."},{"id":30,"category":"Prepositions","question":"Caminé ___ el parque.","options":["por","para","de","en"],"correctAnswer":0,"correctLetter":"A","explanation":"'Por' expresses movement through a place: 'I walked through the park'."},{"id":31,"category":"Verb Conjugation","question":"Yo ___ en casa. (estar)","options":["está","estoy","estás","están"],"correctAnswer":1,"correctLetter":"B","explanation":"First person singular of 'estar' is 'estoy'."},{"id":32,"category":"Verb Conjugation","question":"Tú ___ un pastel delicioso. (hacer)","options":["hago","haces","hace","hacemos"],"correctAnswer":1,"correctLetter":"B","explanation":"Second person singular of 'hacer' is 'haces'."},{"id":33,"category":"Verb Conjugation","question":"Nosotros ___ la tarea juntos. (hacer)","options":["hago","hacen","hacemos","haces"],"correctAnswer":2,"correctLetter":"C","explanation":"First person plural of 'hacer' is 'hacemos'."},{"id":34,"category":"Verb Conjugation","question":"\"Yo ___ la tarea en la biblioteca.\" (hacer)","options":["Hace","Hago","Haces","Hacemos"],"correctAnswer":1,"correctLetter":"B","explanation":"First person singular of 'hacer' is 'hago'."},{"id":35,"category":"Verb Conjugation","question":"Nosotros ___ ejercicio por la mañana. (hacer)","options":["hacen","hacemos","hago","hace"],"correctAnswer":1,"correctLetter":"B","explanation":"'Hacemos' is the nosotros form of 'hacer'."},{"id":36,"category":"Verb Conjugation","question":"\"Normalmente, yo ___ la tarea por la noche.\"","options":["hice","haré","hago","haría"],"correctAnswer":2,"correctLetter":"C","explanation":"Habitual present action → present tense: 'hago'."},{"id":37,"category":"Verb Conjugation","question":"Nosotros ___ terminado el proyecto. (haber)","options":["ha","han","hemos","he"],"correctAnswer":2,"correctLetter":"C","explanation":"'Hemos' is the present perfect auxiliary for 'nosotros'."},{"id":38,"category":"Verb Conjugation","question":"What is the correct way to say 'there is' or 'there are' in the present tense?","options":["Había","Hay","Habrá","Han"],"correctAnswer":1,"correctLetter":"B","explanation":"'Hay' is the impersonal form of 'haber' for present: 'there is/are'."},{"id":39,"category":"Verb Conjugation","question":"En la fiesta ___ mucha gente.","options":["habían","había","hay","han"],"correctAnswer":1,"correctLetter":"B","explanation":"Imperfect of 'haber' for past 'there was' is 'había' (always singular)."},{"id":40,"category":"Verb Conjugation","question":"Si tuviera dinero, ___ un coche nuevo. (comprar)","options":["compro","compraré","compraría","compre"],"correctAnswer":2,"correctLetter":"C","explanation":"Conditional sentences with 'si + imperfect subjunctive' use the conditional tense: 'compraría'."},{"id":41,"category":"Verb Conjugation","question":"La reunión ___ en la sala principal. (ser)","options":["está","es","hay","fue"],"correctAnswer":1,"correctLetter":"B","explanation":"'Ser' is used for scheduled events and their location in formal contexts: 'La reunión es en la sala'."},{"id":42,"category":"Verb Conjugation","question":"Nosotros ___ felices. (ser)","options":["somos","es","soy","son"],"correctAnswer":0,"correctLetter":"A","explanation":"First person plural of 'ser' is 'somos'."},{"id":43,"category":"Verb Conjugation","question":"Mi profesor ___ muy amable. (ser)","options":["es","está","hace","son"],"correctAnswer":0,"correctLetter":"A","explanation":"Permanent traits use 'ser'. Third person singular is 'es'."},{"id":44,"category":"Verb Conjugation","question":"Ella ___ muy inteligente. (ser)","options":["está","es","soy","estamos"],"correctAnswer":1,"correctLetter":"B","explanation":"Permanent characteristic → 'ser'. Third person singular is 'es'."},{"id":45,"category":"Verb Conjugation","question":"Nosotros ___ listos para el examen. (estar)","options":["están","estamos","está","eres"],"correctAnswer":1,"correctLetter":"B","explanation":"Temporary state → 'estar'. First person plural is 'estamos'."},{"id":46,"category":"Verb Conjugation","question":"Esta mañana, antes de salir de casa, yo ya ___ desayunado. (haber)","options":["he","había","habré","haya"],"correctAnswer":1,"correctLetter":"B","explanation":"Past action completed before another past action uses past perfect: 'había'."},{"id":47,"category":"Verb Conjugation","question":"Which is the correct conjugation of 'poder' for 'nosotros'?","options":["Pueden","Podemos","Podeis","Puedes"],"correctAnswer":1,"correctLetter":"B","explanation":"'Podemos' — the nosotros form of 'poder'. The o→ue stem change does NOT apply to nosotros."},{"id":48,"category":"Verb Conjugation","question":"Complete the sentence: '¿___ tú venir mañana?' (poder)","options":["Puedes","Puede","Podéis","Puedo"],"correctAnswer":0,"correctLetter":"A","explanation":"Second person singular of 'poder' is 'puedes' (o→ue stem change)."},{"id":49,"category":"Verb Conjugation","question":"Choose the correct Spanish sentence for: 'They study a lot.'","options":["Ellos estudios mucho","Ellos estudian mucho","Ellos estudios muy","Ellos estudia muy"],"correctAnswer":1,"correctLetter":"B","explanation":"Third person plural of 'estudiar' is 'estudian'."},{"id":50,"category":"Verb Conjugation","question":"Choose the correct Spanish sentence for: 'She is very intelligent.'","options":["Ella es muy inteligente","Ella está muy inteligente","Ella tiene muy inteligente","Ella muy es inteligente"],"correctAnswer":0,"correctLetter":"A","explanation":"Permanent trait → 'ser'. Correct word order: subject + verb + adverb + adjective."},{"id":51,"category":"Numbers","question":"What is the Spanish word for 500?","options":["Quinientos","Cuatrocientos","Seiscientos","Trescientos"],"correctAnswer":0,"correctLetter":"A","explanation":"Quinientos = 500. Each hundred has a specific form in Spanish."},{"id":52,"category":"Numbers","question":"How do you say 1,000 in Spanish?","options":["Cien","Ciento","Mil","Millón"],"correctAnswer":2,"correctLetter":"C","explanation":"'Mil' = 1,000. 'Cien' = 100; 'ciento' is used for 101–199."},{"id":53,"category":"Numbers","question":"How do you write 352 in Spanish?","options":["Trescientos cincuenta y dos","Tres cientos cincuenta dos","Trescientos y cincuenta dos","Trescientas cincuenta y dos"],"correctAnswer":0,"correctLetter":"A","explanation":"Hundreds are written as one word (trescientos), no 'y' between hundreds and tens."},{"id":54,"category":"Numbers","question":"How do you correctly say 99,000 in Spanish?","options":["Noventa y nueve miles","Noventa y nueve mil","Novecientos noventa mil","Noventa nueve mil"],"correctAnswer":1,"correctLetter":"B","explanation":"Thousands in Spanish never pluralize: 'noventa y nueve mil', not 'miles'."},{"id":55,"category":"Numbers","question":"A store bill reads 'doscientos cuarenta y siete euros.' What is the amount in numbers?","options":["€274","€247","€724","€472"],"correctAnswer":1,"correctLetter":"B","explanation":"Doscientos = 200, cuarenta = 40, siete = 7 → 247."},{"id":56,"category":"Numbers","question":"What is 'cuatro mil setecientos treinta y ocho' in digits?","options":["4,738","4,783","4,378","4,873"],"correctAnswer":0,"correctLetter":"A","explanation":"Cuatro mil = 4,000; setecientos = 700; treinta y ocho = 38 → 4,738."},{"id":57,"category":"Numbers","question":"What is 'cinco mil doscientos cuarenta y uno' in digits?","options":["5,421","5,241","5,142","5,412"],"correctAnswer":1,"correctLetter":"B","explanation":"Cinco mil = 5,000; doscientos = 200; cuarenta y uno = 41 → 5,241."},{"id":58,"category":"Numbers","question":"What is the Spanish word for 700?","options":["Setecientos","Ochocientos","Novecientos","Seiscientos"],"correctAnswer":0,"correctLetter":"A","explanation":"Setecientos = 700."},{"id":59,"category":"Numbers","question":"How do you write 1,245 in Spanish?","options":["Mil doscientos cuarenta y cinco","Mil doscientos cuarenta cinco","Mil doscientos y cuarenta cinco","Milésimo doscientos cuarenta y cinco"],"correctAnswer":0,"correctLetter":"A","explanation":"Mil + doscientos + cuarenta y cinco. No 'y' after 'mil' or hundreds."},{"id":60,"category":"Numbers","question":"A receipt reads 'cuatrocientos ochenta y seis euros.' What is the amount in numbers?","options":["€468","€486","€846","€684"],"correctAnswer":1,"correctLetter":"B","explanation":"Cuatrocientos = 400, ochenta = 80, seis = 6 → 486."},{"id":61,"category":"Numbers","question":"How do you correctly say 15,000 in Spanish?","options":["Quince miles","Quince mil","Cincuenta mil","Quinientos mil"],"correctAnswer":1,"correctLetter":"B","explanation":"'Mil' does not pluralize: 'quince mil'."},{"id":62,"category":"Days","question":"How do you say 'Monday' in Spanish?","options":["Martes","Miércoles","Lunes","Jueves"],"correctAnswer":2,"correctLetter":"C","explanation":"Lunes = Monday."},{"id":63,"category":"Days","question":"How do you say 'Friday' in Spanish?","options":["Jueves","Viernes","Sábado","Domingo"],"correctAnswer":1,"correctLetter":"B","explanation":"Viernes = Friday."},{"id":64,"category":"Days","question":"Which day comes after 'miércoles' (Wednesday)?","options":["Martes","Lunes","Jueves","Viernes"],"correctAnswer":2,"correctLetter":"C","explanation":"Jueves (Thursday) comes after miércoles (Wednesday)."},{"id":65,"category":"Days","question":"What is 'el fin de semana' in English?","options":["Weekday","Weekend","Holiday","Vacation"],"correctAnswer":1,"correctLetter":"B","explanation":"'Fin de semana' = weekend (Saturday and Sunday)."},{"id":66,"category":"Days","question":"How do you say 'Sunday' in Spanish?","options":["Sábado","Lunes","Domingo","Martes"],"correctAnswer":2,"correctLetter":"C","explanation":"Domingo = Sunday."},{"id":67,"category":"Days","question":"Which of the following is 'Tuesday' in Spanish?","options":["Lunes","Martes","Miércoles","Jueves"],"correctAnswer":1,"correctLetter":"B","explanation":"Martes = Tuesday."},{"id":68,"category":"Days","question":"In Spanish-speaking countries, which day is typically considered the first day of the week?","options":["Domingo","Sábado","Lunes","Martes"],"correctAnswer":2,"correctLetter":"C","explanation":"Lunes (Monday) is considered the first day of the week in Spanish-speaking countries."},{"id":69,"category":"Days","question":"How do you say 'Today is Wednesday' in Spanish?","options":["Hoy es martes.","Hoy es miércoles.","Hoy es jueves.","Hoy es viernes."],"correctAnswer":1,"correctLetter":"B","explanation":"Miércoles = Wednesday. 'Hoy es miércoles'."},{"id":70,"category":"Days","question":"How do you say 'Thursday' in Spanish?","options":["Viernes","Sábado","Miércoles","Jueves"],"correctAnswer":3,"correctLetter":"D","explanation":"Jueves = Thursday."},{"id":71,"category":"Days","question":"How do you say 'Saturday' in Spanish?","options":["Domingo","Lunes","Sábado","Viernes"],"correctAnswer":2,"correctLetter":"C","explanation":"Sábado = Saturday."},{"id":72,"category":"Colors","question":"What is the Spanish word for 'red'?","options":["Azul","Rojo","Verde","Amarillo"],"correctAnswer":1,"correctLetter":"B","explanation":"Rojo = red."},{"id":73,"category":"Colors","question":"How do you say 'blue' in Spanish?","options":["Azul","Verde","Morado","Gris"],"correctAnswer":0,"correctLetter":"A","explanation":"Azul = blue."},{"id":74,"category":"Colors","question":"What color is 'amarillo'?","options":["Green","Orange","Yellow","Purple"],"correctAnswer":2,"correctLetter":"C","explanation":"Amarillo = yellow."},{"id":75,"category":"Colors","question":"What is 'negro' in English?","options":["White","Gray","Brown","Black"],"correctAnswer":3,"correctLetter":"D","explanation":"Negro = black."},{"id":76,"category":"Colors","question":"How do you say 'green' in Spanish?","options":["Verde","Rojo","Azul","Blanco"],"correctAnswer":0,"correctLetter":"A","explanation":"Verde = green."},{"id":77,"category":"Colors","question":"What color is 'blanco'?","options":["Black","White","Gray","Brown"],"correctAnswer":1,"correctLetter":"B","explanation":"Blanco = white."},{"id":78,"category":"Colors","question":"How do you say 'orange' in Spanish?","options":["Morado","Naranja","Rosa","Café"],"correctAnswer":1,"correctLetter":"B","explanation":"Naranja = orange."},{"id":79,"category":"Colors","question":"What is the Spanish word for 'purple'?","options":["Morado","Rosa","Marrón","Azul"],"correctAnswer":0,"correctLetter":"A","explanation":"Morado = purple."},{"id":80,"category":"Colors","question":"What does 'rosa' mean in English?","options":["Red","Orange","Pink","Purple"],"correctAnswer":2,"correctLetter":"C","explanation":"Rosa = pink."},{"id":81,"category":"Colors","question":"What is the Spanish word for 'brown'?","options":["Gris","Negro","Marrón","Azul"],"correctAnswer":2,"correctLetter":"C","explanation":"Marrón = brown (also 'café' in Latin America)."},{"id":82,"category":"Colors","question":"\"La camisa es ___\". (The shirt is grey.) Fill in the blank.","options":["roja","gris","verde","azul"],"correctAnswer":1,"correctLetter":"B","explanation":"Gris = grey/gray."},{"id":83,"category":"Colors","question":"Which sentence is grammatically correct? (El cielo / azul)","options":["El cielo es azules.","El cielo es azul.","El cielo están azul.","El cielo son azul."],"correctAnswer":1,"correctLetter":"B","explanation":"Adjectives agree with the noun: 'cielo' is masculine singular → 'azul' (no change needed, azul is invariable)."},{"id":84,"category":"Telling Time","question":"Choose the correct translation for 10:30.","options":["Son las diez y media","Son las diez y cuarto","Son las diez menos media","Es la diez y media"],"correctAnswer":0,"correctLetter":"A","explanation":"'Y media' means 'half past'. 10:30 → 'Son las diez y media'."},{"id":85,"category":"Telling Time","question":"How do you say 'It is one o'clock' in Spanish?","options":["Es la una","Son las una","Es las una","Son la una"],"correctAnswer":0,"correctLetter":"A","explanation":"Only 1 o'clock uses 'Es la una' (singular). All other hours use 'Son las...'."},{"id":86,"category":"Telling Time","question":"¿Cómo se dice 'It is 1:15' en español?","options":["Son las una y cuarto.","Es la una y quince.","Son las trece y cuarto.","Es la una y cuarto."],"correctAnswer":3,"correctLetter":"D","explanation":"1:15 → 'Es la una y cuarto.' Both 'quince' and 'cuarto' are acceptable."},{"id":87,"category":"Telling Time","question":"How do you say 'It is midnight'?","options":["Es la medianoche.","Son las doce de la tarde.","Son las doce de la mañana.","Es las doce."],"correctAnswer":0,"correctLetter":"A","explanation":"'Es la medianoche' or 'Son las doce de la noche'."},{"id":88,"category":"Telling Time","question":"¿Qué hora es? (3:00)","options":["Son las tres","Es la una","Son las dos","Son las cuatro"],"correctAnswer":0,"correctLetter":"A","explanation":"3:00 → 'Son las tres en punto'."},{"id":89,"category":"Telling Time","question":"¿Qué hora es? (4:45)","options":["Son las cuatro y cuarenta y cinco","Son las cinco menos cuarto","Es las cinco menos cuarto","Son cuatro menos cuarto"],"correctAnswer":1,"correctLetter":"B","explanation":"4:45 = 15 minutes to 5 → 'Son las cinco menos cuarto'."},{"id":90,"category":"Telling Time","question":"What is the correct way to say '8:30' in Spanish?","options":["Son las ocho y media","Son las ocho y medio","Es las ocho y treinta","Son las ocho de la media"],"correctAnswer":0,"correctLetter":"A","explanation":"'Media' (half) is feminine → 'y media'. 8:30 → 'Son las ocho y media'."},{"id":91,"category":"Telling Time","question":"¿Qué significa 'Son las nueve menos cuarto'?","options":["9:15","8:45","9:45","8:15"],"correctAnswer":1,"correctLetter":"B","explanation":"'Menos cuarto' = minus 15 minutes. 9:00 − 0:15 = 8:45."},{"id":92,"category":"Telling Time","question":"Son las cinco menos cuarto. ¿Qué hora es?","options":["4:45","5:45","20:45","1:45"],"correctAnswer":0,"correctLetter":"A","explanation":"5:00 − 0:15 = 4:45."},{"id":93,"category":"Telling Time","question":"¿Qué hora es: 'Son las diez y veinte'?","options":["10:02","10:20","9:40","10:12"],"correctAnswer":1,"correctLetter":"B","explanation":"'Y veinte' means 'plus twenty minutes'. 10:20."},{"id":94,"category":"Telling Time","question":"¿Cómo se dice '7:15' en español?","options":["Son las siete y cuarto","Son las siete y media","Son las siete en punto","Son las ocho menos cuarto"],"correctAnswer":0,"correctLetter":"A","explanation":"7:15 → 'Son las siete y cuarto' ('cuarto' = quarter)."},{"id":95,"category":"Telling Time","question":"¿Cómo se dice '1:30' en español?","options":["Son las una y media","Es la una y media","Es la uno y treinta","Son las una y treinta"],"correctAnswer":1,"correctLetter":"B","explanation":"1:30 → 'Es la una y media'."},{"id":96,"category":"Telling Time","question":"¿Cómo se dice '2:45' en español?","options":["Son las dos y cuarenta y cinco","Es la dos y cuarenta y cinco","Son las dos menos cuarto","Es las dos menos cuarto"],"correctAnswer":2,"correctLetter":"C","explanation":"2:45 = 15 minutes to 3 → 'Son las tres menos cuarto'."},{"id":97,"category":"Telling Time","question":"¿Cómo se dice '8:50' en español?","options":["Son las ocho y cincuenta","Son las nueve menos diez","Son las ocho menos diez","Son las nueve y diez"],"correctAnswer":1,"correctLetter":"B","explanation":"8:50 = 10 minutes to 9 → 'Son las nueve menos diez'."},{"id":98,"category":"Telling Time","question":"Son las seis y siete. ¿Qué hora es?","options":["7:16","6:07","7:06","6:17"],"correctAnswer":1,"correctLetter":"B","explanation":"'Son las seis y siete' = 6:07."},{"id":99,"category":"Articles","question":"Choose the correct definite article for 'niña'.","options":["el","la","los","las"],"correctAnswer":1,"correctLetter":"B","explanation":"'Niña' is feminine singular → 'la'."},{"id":100,"category":"Articles","question":"Choose the correct indefinite article for 'casas'.","options":["una","un","unas","unos"],"correctAnswer":2,"correctLetter":"C","explanation":"'Casas' is feminine plural → 'unas'."},{"id":101,"category":"Articles","question":"___ perros son muy juguetones.","options":["El","La","Los","Una"],"correctAnswer":2,"correctLetter":"C","explanation":"'Perros' is masculine plural → 'Los'."},{"id":102,"category":"Articles","question":"Necesito ___ bolígrafo para escribir.","options":["una","unos","un","el"],"correctAnswer":2,"correctLetter":"C","explanation":"'Bolígrafo' is masculine singular → indefinite 'un'."},{"id":103,"category":"Articles","question":"¿Dónde está ___ baño?","options":["el","la","un","una"],"correctAnswer":0,"correctLetter":"A","explanation":"'Baño' is masculine → definite article 'el'."},{"id":104,"category":"Articles","question":"___ leche está fría.","options":["El","La","Los","Las"],"correctAnswer":1,"correctLetter":"B","explanation":"'Leche' is feminine → 'La'."},{"id":105,"category":"Articles","question":"Compré ___ zapatos nuevos.","options":["un","una","unos","unas"],"correctAnswer":2,"correctLetter":"C","explanation":"'Zapatos' is masculine plural → 'unos'."},{"id":106,"category":"Articles","question":"Choose the correct article: ___ árbol es muy grande.","options":["La","El","Una","Los"],"correctAnswer":1,"correctLetter":"B","explanation":"'Árbol' is masculine singular → 'El'."},{"id":107,"category":"Articles","question":"___ idiomas son difíciles de aprender.","options":["El","La","Los","Las"],"correctAnswer":2,"correctLetter":"C","explanation":"'Idiomas' is masculine plural → 'Los'."},{"id":108,"category":"Articles","question":"¿Cuánto cuesta ___ manzana?","options":["el","la","un","una"],"correctAnswer":3,"correctLetter":"D","explanation":"'Manzana' is feminine singular → indefinite 'una'."},{"id":109,"category":"Articles","question":"Tengo ___ hambre terrible.","options":["un","una","el","la"],"correctAnswer":0,"correctLetter":"A","explanation":"'Hambre' is feminine but starts with stressed 'a' → takes 'un' in singular."},{"id":110,"category":"Articles","question":"___ agua del río es muy clara.","options":["El","La","Un","Una"],"correctAnswer":0,"correctLetter":"A","explanation":"'Agua' takes 'El' in singular due to the stressed 'a' at the start, even though it's feminine."},{"id":111,"category":"Articles","question":"Ella es ___ médica muy buena.","options":["un","una","el","la"],"correctAnswer":1,"correctLetter":"B","explanation":"Indefinite article with profession + adjective: 'una médica'."},{"id":112,"category":"Articles","question":"___ lunes tengo clase de español.","options":["El","La","Los","Las"],"correctAnswer":2,"correctLetter":"C","explanation":"Days of the week used habitually take 'los': 'Los lunes'."},{"id":113,"category":"Articles","question":"Vi ___ película muy interesante ayer.","options":["un","una","el","la"],"correctAnswer":1,"correctLetter":"B","explanation":"'Película' is feminine → indefinite 'una'."},{"id":114,"category":"Pronouns","question":"What is the subject pronoun for 'I' in Spanish?","options":["Yo","Tú","Él","Me"],"correctAnswer":0,"correctLetter":"A","explanation":"'Yo' = I (first person singular)."},{"id":115,"category":"Pronouns","question":"What is the subject pronoun for 'you' (informal) in Spanish?","options":["Usted","Vos","Tú","Te"],"correctAnswer":2,"correctLetter":"C","explanation":"'Tú' is the informal second person singular subject pronoun."},{"id":116,"category":"Pronouns","question":"Which is the correct direct object pronoun for 'him'?","options":["le","lo","la","les"],"correctAnswer":1,"correctLetter":"B","explanation":"'Lo' is the masculine direct object pronoun for 'him/it'."},{"id":117,"category":"Pronouns","question":"Which pronoun replaces 'a María' in the sentence 'Llamo a María'?","options":["lo","la","le","se"],"correctAnswer":1,"correctLetter":"B","explanation":"'María' is a direct object and feminine → 'la'. 'Llamo a María' → 'La llamo'."},{"id":118,"category":"Pronouns","question":"Complete: '___ gusta el café.' (He likes coffee.)","options":["Lo","Le","La","Se"],"correctAnswer":1,"correctLetter":"B","explanation":"'Gustar' uses indirect object pronouns. Third person singular → 'Le gusta'."},{"id":119,"category":"Pronouns","question":"Which is the reflexive pronoun for 'nosotros'?","options":["se","me","nos","os"],"correctAnswer":2,"correctLetter":"C","explanation":"The reflexive pronoun for 'nosotros' is 'nos'."},{"id":120,"category":"Pronouns","question":"Choose the correct pronoun: 'Él ___ habló ayer.' (He spoke to me yesterday.)","options":["me","te","le","lo"],"correctAnswer":0,"correctLetter":"A","explanation":"Indirect object 'to me' = 'me'."},{"id":121,"category":"Pronouns","question":"Which sentence is correct? (I wash myself.)","options":["Yo me lavo.","Yo me lava.","Yo se lavo.","Yo te lavo."],"correctAnswer":0,"correctLetter":"A","explanation":"Reflexive: 'me' for first person. 'Yo me lavo'."},{"id":122,"category":"Pronouns","question":"What does 'os' refer to in Spanish?","options":["Them","Us","You all (Spain, informal)","Yourselves"],"correctAnswer":2,"correctLetter":"C","explanation":"'Os' is the second person plural informal pronoun used in Spain (vosotros form)."},{"id":123,"category":"Pronouns","question":"Choose the correct form: 'She sees ___ every day.' (them, masculine)","options":["la","le","los","les"],"correctAnswer":2,"correctLetter":"C","explanation":"Direct object pronoun for masculine plural = 'los'."},{"id":124,"category":"Pronouns","question":"Complete: 'A nosotros ___ encanta bailar.'","options":["me","te","nos","les"],"correctAnswer":2,"correctLetter":"C","explanation":"Indirect object for 'nosotros' = 'nos'."},{"id":125,"category":"Pronouns","question":"What does 'se' indicate in a reflexive sentence?","options":["Direct object","Third person reflexive pronoun","Subject pronoun","Plural marker"],"correctAnswer":1,"correctLetter":"B","explanation":"'Se' is the reflexive pronoun for él/ella/usted/ellos/ellas/ustedes."},{"id":126,"category":"Pronouns","question":"Choose the correct sentence: 'I give it (the book, masculine) to you.'","options":["Te lo doy.","Te la doy.","Le lo doy.","Lo te doy."],"correctAnswer":0,"correctLetter":"A","explanation":"Double object pronouns: indirect (te) before direct (lo). 'Te lo doy'."},{"id":127,"category":"Pronouns","question":"Which pronoun is used for 'you' (formal, singular) in most Spanish-speaking countries?","options":["Tú","Vos","Usted","Vosotros"],"correctAnswer":2,"correctLetter":"C","explanation":"'Usted' is the formal second person singular, using third-person verb conjugation."},{"id":128,"category":"Pronouns","question":"Complete: 'Ellos ___ escribieron una carta.' (They wrote her a letter.)","options":["lo","la","le","se"],"correctAnswer":2,"correctLetter":"C","explanation":"Indirect object for 'her' = 'le'. 'Le escribieron una carta'."},{"id":129,"category":"Prepositions","question":"El gato está ___ la caja. (inside)","options":["sobre","bajo","dentro de","fuera de"],"correctAnswer":2,"correctLetter":"C","explanation":"'Dentro de' = inside. 'El gato está dentro de la caja'."},{"id":130,"category":"Prepositions","question":"La lámpara está ___ la mesa. (above)","options":["debajo de","delante de","encima de","detrás de"],"correctAnswer":2,"correctLetter":"C","explanation":"'Encima de' = on top of / above."},{"id":131,"category":"Prepositions","question":"Vivo ___ Madrid.","options":["a","en","de","por"],"correctAnswer":1,"correctLetter":"B","explanation":"'En' is used for location of residence: 'I live in Madrid'."},{"id":132,"category":"Prepositions","question":"Salgo ___ casa a las ocho.","options":["de","a","en","para"],"correctAnswer":0,"correctLetter":"A","explanation":"'De' indicates departure from a place: 'I leave from home'."},{"id":133,"category":"Prepositions","question":"El perro está ___ el sofá. (under)","options":["sobre","encima de","debajo de","entre"],"correctAnswer":2,"correctLetter":"C","explanation":"'Debajo de' = under/beneath."},{"id":134,"category":"Prepositions","question":"La tienda está ___ el hospital y el banco.","options":["al lado de","detrás de","entre","encima de"],"correctAnswer":2,"correctLetter":"C","explanation":"'Entre' = between. 'La tienda está entre el hospital y el banco'."},{"id":135,"category":"Prepositions","question":"Estoy aquí ___ ayudarte.","options":["por","para","de","en"],"correctAnswer":1,"correctLetter":"B","explanation":"'Para' expresses purpose: 'I am here to help you'."},{"id":136,"category":"Prepositions","question":"Viajé ___ tren.","options":["en","por","de","a"],"correctAnswer":0,"correctLetter":"A","explanation":"'En' is used with modes of transport: 'Viajé en tren'."},{"id":137,"category":"Prepositions","question":"Gracias ___ tu ayuda.","options":["por","para","de","a"],"correctAnswer":0,"correctLetter":"A","explanation":"'Por' expresses cause/reason: 'Thank you for your help'."},{"id":138,"category":"Prepositions","question":"El cuadro está ___ la pared. (on)","options":["en","sobre","de","entre"],"correctAnswer":1,"correctLetter":"B","explanation":"'Sobre' = on/upon (for vertical surfaces). 'El cuadro está sobre la pared'."},{"id":139,"category":"Verb Conjugation","question":"Conjugate 'hablar' for 'tú' in the present tense.","options":["hablo","hablas","habla","habláis"],"correctAnswer":1,"correctLetter":"B","explanation":"'Tú hablas' — standard -ar conjugation for second person singular."},{"id":140,"category":"Verb Conjugation","question":"Conjugate 'comer' for 'ellos' in the present tense.","options":["come","comes","comen","coméis"],"correctAnswer":2,"correctLetter":"C","explanation":"'Ellos comen' — third person plural of -er verb 'comer'."},{"id":141,"category":"Verb Conjugation","question":"Conjugate 'vivir' for 'yo' in the present tense.","options":["vives","vive","vivís","vivo"],"correctAnswer":3,"correctLetter":"D","explanation":"'Yo vivo' — first person singular of -ir verb 'vivir'."},{"id":142,"category":"Verb Conjugation","question":"What is the 'usted' form of 'tener' in the present tense?","options":["tengo","tienes","tiene","tenemos"],"correctAnswer":2,"correctLetter":"C","explanation":"'Usted tiene' — 'tener' is irregular: yo tengo, tú tienes, él/usted tiene."},{"id":143,"category":"Verb Conjugation","question":"Conjugate 'ir' for 'nosotros' in the present tense.","options":["van","vais","vamos","va"],"correctAnswer":2,"correctLetter":"C","explanation":"'Nosotros vamos' — 'ir' is highly irregular in the present tense."},{"id":144,"category":"Verb Conjugation","question":"What is the 'yo' form of 'ser' in the present tense?","options":["es","eres","somos","soy"],"correctAnswer":3,"correctLetter":"D","explanation":"'Yo soy' — 'ser' is irregular: soy, eres, es, somos, sois, son."},{"id":145,"category":"Verb Conjugation","question":"Conjugate 'querer' for 'ella' in the present tense.","options":["quiero","quieres","quiere","queremos"],"correctAnswer":2,"correctLetter":"C","explanation":"'Ella quiere' — stem-changing verb (e→ie): quiero, quieres, quiere, queremos, queréis, quieren."},{"id":146,"category":"Verb Conjugation","question":"What is the preterite (past) tense of 'hablar' for 'yo'?","options":["hablé","hablaste","habló","hablamos"],"correctAnswer":0,"correctLetter":"A","explanation":"First person singular preterite of -ar verbs: 'hablé'."},{"id":147,"category":"Verb Conjugation","question":"What is the preterite of 'ir' for 'ellos'?","options":["fueron","fuiste","fui","fuimos"],"correctAnswer":0,"correctLetter":"A","explanation":"'Ir' and 'ser' share preterite forms. 'Ellos fueron'."},{"id":148,"category":"Verb Conjugation","question":"Conjugate 'dormir' for 'tú' in the present tense.","options":["durmo","duermes","duerme","dormís"],"correctAnswer":1,"correctLetter":"B","explanation":"'Dormir' is a stem-changing verb (o→ue): yo duermo, tú duermes."},{"id":149,"category":"Verb Conjugation","question":"What is the 'vosotros' form of 'hablar' in the present tense?","options":["hablan","habláis","hablas","hablamos"],"correctAnswer":1,"correctLetter":"B","explanation":"'Vosotros habláis' — vosotros form adds '-áis' for -ar verbs."},{"id":150,"category":"Verb Conjugation","question":"Conjugate 'tener' for 'yo' in the present tense.","options":["tiene","tienes","tengo","tenemos"],"correctAnswer":2,"correctLetter":"C","explanation":"'Yo tengo' — 'tener' has an irregular 'yo' form."},{"id":151,"category":"Verb Conjugation","question":"What is the future tense of 'hablar' for 'yo'?","options":["hablaré","hablarás","hablará","hablaremos"],"correctAnswer":0,"correctLetter":"A","explanation":"Future tense: infinitive + ending. 'Yo hablaré'."},{"id":152,"category":"Verb Conjugation","question":"Choose the correct form: 'Ayer nosotros ___ al cine.' (ir)","options":["vamos","vimos","fuimos","íbamos"],"correctAnswer":2,"correctLetter":"C","explanation":"Preterite of 'ir' for nosotros = 'fuimos'."},{"id":153,"category":"Verb Conjugation","question":"What is the imperative (command) for 'tú' with 'hablar'?","options":["hablas","habla","hable","habléis"],"correctAnswer":1,"correctLetter":"B","explanation":"Affirmative tú command for -ar verbs = third person singular: 'habla'."},{"id":154,"category":"Verb Conjugation","question":"Conjugate 'poder' for 'ellos' in the present tense.","options":["podemos","podéis","puedo","pueden"],"correctAnswer":3,"correctLetter":"D","explanation":"'Ellos pueden' — stem-changing (o→ue) but nosotros/vosotros keep 'o'."},{"id":155,"category":"Verb Conjugation","question":"What is the 'yo' form of 'saber' in the present tense?","options":["sabes","sabe","sé","sabemos"],"correctAnswer":2,"correctLetter":"C","explanation":"'Saber' has an irregular 'yo' form: 'yo sé'."},{"id":156,"category":"Verb Conjugation","question":"Complete: 'Ella ___ música clásica.' (escuchar, present)","options":["escucho","escuchas","escucha","escuchamos"],"correctAnswer":2,"correctLetter":"C","explanation":"'Ella escucha' — third person singular of -ar verb."},{"id":157,"category":"Verb Conjugation","question":"What is the conditional tense of 'comer' for 'nosotros'?","options":["comeríamos","comemos","comeríais","comeremos"],"correctAnswer":0,"correctLetter":"A","explanation":"Conditional: infinitive + conditional ending. 'Nosotros comeríamos'."},{"id":158,"category":"Verb Conjugation","question":"Which sentence uses the subjunctive correctly?","options":["Espero que ella viene.","Espero que ella venga.","Espero que ella vendrá.","Espero que ella vino."],"correctAnswer":1,"correctLetter":"B","explanation":"'Esperar que' triggers the subjunctive mood: 'Espero que ella venga'."},{"id":159,"category":"Numbers","question":"How do you say '21' in Spanish?","options":["Veinte y uno","Veintiuno","Veinteuno","Veinte uno"],"correctAnswer":1,"correctLetter":"B","explanation":"21 = 'veintiuno' (one word, no space)."},{"id":160,"category":"Numbers","question":"How do you say '100' in Spanish?","options":["Ciento","Cien","Mil","Cientos"],"correctAnswer":1,"correctLetter":"B","explanation":"100 = 'cien' (used alone); 'ciento' is used for 101–199."},{"id":161,"category":"Numbers","question":"How do you say '101' in Spanish?","options":["Ciento uno","Cien uno","Cien y uno","Cientos uno"],"correctAnswer":0,"correctLetter":"A","explanation":"101 = 'ciento uno'. 'Cien' becomes 'ciento' for 101–199."},{"id":162,"category":"Numbers","question":"What is 'doscientos' in digits?","options":["20","120","200","2,000"],"correctAnswer":2,"correctLetter":"C","explanation":"Doscientos = 200."},{"id":163,"category":"Numbers","question":"How do you say '1,000,000' in Spanish?","options":["Mil","Millón","Billón","Cien mil"],"correctAnswer":1,"correctLetter":"B","explanation":"1,000,000 = 'un millón'."},{"id":164,"category":"Numbers","question":"How do you say '16' in Spanish?","options":["Diez y seis","Dieciséis","Dieciseis","Seis y diez"],"correctAnswer":1,"correctLetter":"B","explanation":"16 = 'dieciséis' (one word, with accent)."},{"id":165,"category":"Numbers","question":"How do you say '200' when counting feminine nouns (e.g., 'doscientas páginas')?","options":["doscientos páginas","doscientas páginas","dos cientos páginas","dos cienras páginas"],"correctAnswer":1,"correctLetter":"B","explanation":"Hundreds agree in gender: 'doscientas' for feminine nouns."},{"id":166,"category":"Numbers","question":"What is 'noventa' in digits?","options":["19","90","900","9,000"],"correctAnswer":1,"correctLetter":"B","explanation":"Noventa = 90."},{"id":167,"category":"Numbers","question":"How do you say '50' in Spanish?","options":["Cuarenta","Cincuenta","Sesenta","Setenta"],"correctAnswer":1,"correctLetter":"B","explanation":"Cincuenta = 50."},{"id":168,"category":"Numbers","question":"What is 'treinta y tres' in digits?","options":["23","33","303","3,300"],"correctAnswer":1,"correctLetter":"B","explanation":"Treinta = 30, tres = 3 → 33."},{"id":169,"category":"Days","question":"How do you say 'on Mondays' (habitually) in Spanish?","options":["El lunes","Los lunes","En lunes","A lunes"],"correctAnswer":1,"correctLetter":"B","explanation":"Habitual days use the definite plural article: 'los lunes'."},{"id":170,"category":"Days","question":"What is the abbreviation for 'miércoles' in a Spanish calendar?","options":["Ma","Mi","Ju","Vi"],"correctAnswer":1,"correctLetter":"B","explanation":"Miércoles is abbreviated as 'Mi' or 'X' in some calendars."},{"id":171,"category":"Days","question":"How do you say 'last Tuesday' in Spanish?","options":["el próximo martes","el martes pasado","todos los martes","cada martes"],"correctAnswer":1,"correctLetter":"B","explanation":"'Pasado' means last/past: 'el martes pasado'."},{"id":172,"category":"Days","question":"How do you say 'next Friday' in Spanish?","options":["el viernes pasado","los viernes","el próximo viernes","cada viernes"],"correctAnswer":2,"correctLetter":"C","explanation":"'Próximo' means next: 'el próximo viernes'."},{"id":173,"category":"Days","question":"Which sentence means 'I work every Saturday'?","options":["Trabajo el próximo sábado.","Trabajo todos los sábados.","Trabajo los sábados pasados.","Trabajo cada el sábado."],"correctAnswer":1,"correctLetter":"B","explanation":"'Todos los sábados' = every Saturday."},{"id":174,"category":"Colors","question":"How do you say 'the red car' in Spanish? (El coche ___)","options":["El coche roja","El coche rojos","El coche rojo","El coche rojas"],"correctAnswer":2,"correctLetter":"C","explanation":"'Coche' is masculine singular → 'rojo'."},{"id":175,"category":"Colors","question":"Which is correct? 'The yellow flowers' (Las flores ___)","options":["amarillo","amarilla","amarillos","amarillas"],"correctAnswer":3,"correctLetter":"D","explanation":"'Flores' is feminine plural → 'amarillas'."},{"id":176,"category":"Colors","question":"How do you say 'a gray cat' in Spanish?","options":["un gato gris","una gato gris","un gata gris","unos gatos grises"],"correctAnswer":0,"correctLetter":"A","explanation":"'Gato' is masculine singular → 'un gato gris'. 'Gris' is invariable for gender."},{"id":177,"category":"Colors","question":"Which color means 'light blue' in Spanish?","options":["Azul oscuro","Azul claro","Azul marino","Azul eléctrico"],"correctAnswer":1,"correctLetter":"B","explanation":"'Claro' = light, so 'azul claro' = light blue."},{"id":178,"category":"Colors","question":"Complete: 'El cielo es ___ hoy.' (cloudy / gray)","options":["negro","blanco","gris","marrón"],"correctAnswer":2,"correctLetter":"C","explanation":"A cloudy sky looks gray → 'gris'."},{"id":179,"category":"Colors","question":"How do you describe 'the green trees' in Spanish?","options":["los árboles verde","los árboles verdes","las árboles verde","la árbol verde"],"correctAnswer":1,"correctLetter":"B","explanation":"'Árboles' is masculine plural → 'los árboles verdes'."},{"id":180,"category":"Colors","question":"What is 'morado oscuro' in English?","options":["Light purple","Dark purple","Dark red","Dark blue"],"correctAnswer":1,"correctLetter":"B","explanation":"'Oscuro' = dark, 'morado' = purple → dark purple."},{"id":181,"category":"Colors","question":"Choose the correct sentence: 'She is wearing a white dress.'","options":["Ella lleva un vestido blanca.","Ella lleva un vestido blanco.","Ella lleva una vestido blanco.","Ella llevas un vestido blanco."],"correctAnswer":1,"correctLetter":"B","explanation":"'Vestido' is masculine → 'un vestido blanco'."},{"id":182,"category":"Colors","question":"What color is associated with envy in the Spanish expression 'verde de envidia'?","options":["Rojo","Amarillo","Verde","Azul"],"correctAnswer":2,"correctLetter":"C","explanation":"'Verde de envidia' = green with envy."},{"id":183,"category":"Colors","question":"How do you say 'the blue and white flag' in Spanish?","options":["la bandera azul y blanca","la bandera azul y blanco","la bandera azules y blancas","el bandera azul y blanca"],"correctAnswer":0,"correctLetter":"A","explanation":"'Bandera' is feminine → both adjectives are feminine: 'azul' (invariable) and 'blanca'."}];
+
+const CAT_ICONS = {Articles:'📖',Pronouns:'👤',Prepositions:'📍','Verb Conjugation':'🔧',Numbers:'🔢',Days:'📅',Colors:'🎨','Telling Time':'⏰'};
+const CAT_COLORS = {Articles:'#e8734a',Pronouns:'#5b8de8',Prepositions:'#48b87a',['Verb Conjugation']:'#c84b31',Numbers:'#d4a843',Days:'#9b5de5',Colors:'#f72585',['Telling Time']:'#06d6a0'};
+const BADGES = [
+  {id:'first',name:'First Step',desc:'Answer 1 question',icon:'🌱',threshold:1,type:'answered'},
+  {id:'ten',name:'Getting Going',desc:'Answer 10 questions',icon:'🚀',threshold:10,type:'answered'},
+  {id:'fifty',name:'Dedicated',desc:'Answer 50 questions',icon:'💪',threshold:50,type:'answered'},
+  {id:'all',name:'Completionist',desc:'Answer all 183',icon:'🏆',threshold:183,type:'answered'},
+  {id:'perfect',name:'Perfection',desc:'100% on a quiz',icon:'⭐',threshold:100,type:'perfect'},
+  {id:'streak3',name:'On Fire',desc:'3-day streak',icon:'🔥',threshold:3,type:'streak'},
+  {id:'streak7',name:'Unstoppable',desc:'7-day streak',icon:'⚡',threshold:7,type:'streak'},
+  {id:'speed',name:'Speed Learner',desc:'500 points earned',icon:'💎',threshold:500,type:'points'},
+];
+
+// STATE
+let state = loadState();
+let quizState = {questions:[],idx:0,answers:{},mode:'practice',category:'all',label:''};
+let currentMode = 'practice';
+let selectedMode = 'practice';
+let sidebarOpen = window.innerWidth > 768;
+
+function loadState(){
+  try{return JSON.parse(localStorage.getItem('es_state'))||createState()}catch(e){return createState()}
+}
+function createState(){
+  return {
+    totalAnswered:0, totalCorrect:0, points:0, streak:0, lastDay:'',
+    catStats:{}, wrongIds:[], bookmarks:[], unlockedBadges:[], history:[]
+  };
+}
+function saveState(){localStorage.setItem('es_state',JSON.stringify(state))}
+
+// INIT
+function init(){
+  // Update streak
+  const today = new Date().toDateString();
+  if(state.lastDay !== today){
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+    if(state.lastDay === yesterday.toDateString()) state.streak++;
+    else state.streak = state.lastDay ? 0 : state.streak;
+    state.lastDay = today;
+    saveState();
+  }
+
+  buildCatNav();
+  buildCategoryGrid();
+  buildCategorySelectGrid();
+  updateStats();
+  buildBadges();
+  buildWeakTopics();
+  updateSidebarStats();
+
+  if(sidebarOpen) document.getElementById('sidebar').classList.remove('collapsed');
+  else document.getElementById('sidebar').classList.add('collapsed');
+}
+
+function buildCatNav(){
+  const cats = [...new Set(QUESTIONS.map(q=>q.category))];
+  const container = document.getElementById('cat-nav');
+  container.innerHTML = cats.map(cat=>{
+    const count = QUESTIONS.filter(q=>q.category===cat).length;
+    return `<button class="nav-btn" onclick="startQuiz('practice','${cat}')" id="nav-cat-${cat.replace(/ /g,'_')}">
+      <span class="cat-icon">${CAT_ICONS[cat]||'📚'}</span>${cat}
+      <span class="cat-count">${count}</span>
+    </button>`;
+  }).join('');
+}
+
+function buildCategoryGrid(){
+  const cats = [...new Set(QUESTIONS.map(q=>q.category))];
+  const container = document.getElementById('category-grid');
+  container.innerHTML = cats.map(cat=>{
+    const total = QUESTIONS.filter(q=>q.category===cat).length;
+    const stats = state.catStats[cat]||{answered:0,correct:0};
+    const pct = stats.answered ? Math.round(stats.correct/stats.answered*100) : 0;
+    const done = Math.round(stats.answered/total*100);
+    return `<div class="cat-card" onclick="startQuiz('practice','${cat}')">
+      <div class="cat-card-pct">${stats.answered?pct+'%':''}</div>
+      <div class="cat-card-icon">${CAT_ICONS[cat]||'📚'}</div>
+      <div class="cat-card-name">${cat}</div>
+      <div class="cat-card-count">${total} questions · ${stats.answered} done</div>
+      <div class="cat-card-progress"><div class="cat-card-bar" style="width:${done}%;background:${CAT_COLORS[cat]||'var(--accent)'}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function buildCategorySelectGrid(){
+  const cats = [...new Set(QUESTIONS.map(q=>q.category))];
+  const container = document.getElementById('cat-select-grid');
+  container.innerHTML = cats.map(cat=>{
+    const total = QUESTIONS.filter(q=>q.category===cat).length;
+    return `<div class="cat-card" onclick="startQuiz(selectedMode,'${cat}')">
+      <div class="cat-card-icon">${CAT_ICONS[cat]||'📚'}</div>
+      <div class="cat-card-name">${cat}</div>
+      <div class="cat-card-count">${total} questions</div>
+    </div>`;
+  }).join('');
+}
+
+function updateStats(){
+  const acc = state.totalAnswered ? Math.round(state.totalCorrect/state.totalAnswered*100) : null;
+  document.getElementById('stat-answered').textContent = state.totalAnswered;
+  document.getElementById('stat-accuracy').textContent = acc ? acc+'%' : '—';
+  document.getElementById('stat-points').textContent = state.points;
+  document.getElementById('stat-streak').textContent = state.streak+'🔥';
+  document.getElementById('points-display').textContent = state.points;
+  if(acc) document.getElementById('acc-badge').textContent = acc>=80?'Excellent!':acc>=60?'Good job!':'Keep going!';
+  document.getElementById('wrong-count').textContent = state.wrongIds.length;
+  document.getElementById('bm-count').textContent = state.bookmarks.length;
+}
+
+function updateSidebarStats(){
+  document.getElementById('sb-total').textContent = state.totalAnswered;
+  const acc = state.totalAnswered ? Math.round(state.totalCorrect/state.totalAnswered*100)+'%' : '—';
+  document.getElementById('sb-acc').textContent = acc;
+  document.getElementById('streak-num').textContent = state.streak+'🔥';
+}
+
+function buildBadges(){
+  const container = document.getElementById('badges-grid');
+  container.innerHTML = BADGES.map(b=>{
+    const unlocked = isBadgeUnlocked(b);
+    return `<div class="badge-card ${unlocked?'unlocked':''}">
+      <div class="badge-icon">${b.icon}</div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-desc">${b.desc}</div>
+    </div>`;
+  }).join('');
+}
+
+function isBadgeUnlocked(b){
+  if(b.type==='answered') return state.totalAnswered>=b.threshold;
+  if(b.type==='streak') return state.streak>=b.threshold;
+  if(b.type==='points') return state.points>=b.threshold;
+  if(b.type==='perfect') return state.unlockedBadges.includes(b.id);
+  return false;
+}
+
+function buildWeakTopics(){
+  const container = document.getElementById('weak-topics-list');
+  const cats = Object.entries(state.catStats)
+    .filter(([,s])=>s.answered>=3)
+    .map(([cat,s])=>({cat,acc:Math.round(s.correct/s.answered*100)}))
+    .sort((a,b)=>a.acc-b.acc)
+    .slice(0,5);
+
+  if(!cats.length){
+    container.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:12px">Complete more questions to see weak topics.</div>';
+    return;
+  }
+  container.innerHTML = cats.map(({cat,acc})=>{
+    const color = acc<60?'var(--red)':acc<80?'var(--gold)':'var(--green)';
+    return `<div class="weak-item" onclick="startQuiz('practice','${cat}')">
+      <span class="cat-icon" style="font-size:18px">${CAT_ICONS[cat]||'📚'}</span>
+      <span class="weak-cat">${cat}</span>
+      <span class="weak-acc">${acc}%</span>
+      <div class="weak-bar-wrap"><div class="weak-bar" style="width:${acc}%;background:${color}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// QUIZ LOGIC
+function startQuiz(mode, category){
+  currentMode = mode;
+  let qs = category==='all' ? [...QUESTIONS] : QUESTIONS.filter(q=>q.category===category);
+  // Shuffle
+  qs = qs.sort(()=>Math.random()-0.5);
+  if(category==='all' && mode!=='test') qs = qs.slice(0,20);
+
+  quizState = {
+    questions: qs,
+    idx: 0,
+    answers: {},
+    mode,
+    category,
+    label: category==='all'?'Mixed Quiz':category,
+    points: 0
+  };
+
+  showView('quiz');
+  renderQuestion();
+}
+
+function startDaily(){
+  const seed = new Date().toDateString();
+  let h = 0; for(let c of seed) h = (h*31+c.charCodeAt(0))%QUESTIONS.length;
+  const qs = [];
+  for(let i=0;i<10;i++) qs.push(QUESTIONS[(h+i*17)%QUESTIONS.length]);
+  currentMode = 'practice';
+  quizState = {questions:[...qs],idx:0,answers:{},mode:'practice',category:'daily',label:'Daily Practice',points:0};
+  showView('quiz');
+  renderQuestion();
+}
+
+function startWrong(){
+  const wrong = QUESTIONS.filter(q=>state.wrongIds.includes(q.id)).sort(()=>Math.random()-0.5);
+  if(!wrong.length){showToast('🎉 No wrong answers yet!');return;}
+  currentMode = 'practice';
+  quizState = {questions:wrong,idx:0,answers:{},mode:'practice',category:'wrong',label:'Retry Wrong',points:0};
+  showView('quiz');
+  renderQuestion();
+}
+
+function startBookmarks(){
+  const bm = QUESTIONS.filter(q=>state.bookmarks.includes(q.id)).sort(()=>Math.random()-0.5);
+  if(!bm.length){showToast('📌 No bookmarks yet!');return;}
+  quizState = {questions:bm,idx:0,answers:{},mode:'practice',category:'bookmarks',label:'Bookmarked',points:0};
+  showView('quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const {questions,idx,mode,label} = quizState;
+  const q = questions[idx];
+  if(!q) return showResults();
+
+  document.getElementById('quiz-cat-label').textContent = q.category + ' · ' + label;
+  document.getElementById('quiz-num-label').textContent = `Question ${idx+1} of ${questions.length}`;
+  document.getElementById('quiz-progress').style.width = ((idx/questions.length)*100)+'%';
+  document.getElementById('question-text').textContent = q.question;
+  document.getElementById('feedback-area').innerHTML = '';
+  document.getElementById('test-warning').style.display = mode==='test'?'flex':'none';
+
+  const answered = quizState.answers[idx];
+  const letters = ['A','B','C','D'];
+  const optHtml = q.options.map((opt,i)=>{
+    let cls = 'option-btn';
+    if(answered !== undefined){
+      cls += ' revealed';
+      if(mode==='practice'){
+        if(i===q.correctAnswer) cls += ' correct';
+        else if(i===answered) cls += ' wrong';
+        else cls += ' dimmed';
+      } else {
+        if(i===answered) cls += ' selected-test';
+      }
+    }
+    return `<button class="${cls}" onclick="answerQ(${i})" ${answered!==undefined?'disabled':''}>
+      <span class="option-letter">${letters[i]}</span>${opt}
+    </button>`;
+  }).join('');
+  document.getElementById('options-grid').innerHTML = optHtml;
+
+  // Bookmark button
+  const bm = document.getElementById('bookmark-btn');
+  if(state.bookmarks.includes(q.id)) bm.classList.add('bookmarked');
+  else bm.classList.remove('bookmarked');
+
+  if(answered !== undefined && mode==='practice') showFeedback(q,answered);
+
+  // Nav buttons
+  document.getElementById('prev-btn').style.visibility = idx===0?'hidden':'visible';
+  document.getElementById('skip-btn').style.display = answered!==undefined?'none':'inline-block';
+  document.getElementById('next-btn').textContent = idx===questions.length-1?'Finish ✓':'Next →';
+}
+
+function answerQ(optIdx){
+  const {questions,idx,mode} = quizState;
+  if(quizState.answers[idx]!==undefined) return;
+  const q = questions[idx];
+  quizState.answers[idx] = optIdx;
+  const correct = optIdx===q.correctAnswer;
+
+  // Update stats
+  state.totalAnswered++;
+  if(correct){
+    state.totalCorrect++;
+    quizState.points = (quizState.points||0)+10;
+    state.points+=10;
+    // Remove from wrong
+    state.wrongIds = state.wrongIds.filter(id=>id!==q.id);
+  } else {
+    if(!state.wrongIds.includes(q.id)) state.wrongIds.push(q.id);
+  }
+
+  // Cat stats
+  if(!state.catStats[q.category]) state.catStats[q.category]={answered:0,correct:0};
+  state.catStats[q.category].answered++;
+  if(correct) state.catStats[q.category].correct++;
+
+  saveState();
+  updateStats();
+  updateSidebarStats();
+
+  renderQuestion();
+  if(correct) confetti();
+
+  // Auto advance in practice mode
+  if(mode==='practice' && idx < questions.length-1){
+    setTimeout(()=>{},0); // just re-render
+  }
+}
+
+function showFeedback(q, answerIdx){
+  const correct = answerIdx===q.correctAnswer;
+  document.getElementById('feedback-area').innerHTML = `
+    <div class="feedback-card">
+      <div class="feedback-header">
+        <span class="feedback-icon">${correct?'✅':'❌'}</span>
+        <span class="feedback-title ${correct?'feedback-correct':'feedback-wrong'}">${correct?'Correct! +10 pts':'Incorrect'}</span>
+        ${!correct?`<span style="font-size:13px;color:var(--text3);margin-left:auto">Correct: <strong>${q.options[q.correctAnswer]}</strong></span>`:''}
+      </div>
+      <div class="explanation">${q.explanation}</div>
+    </div>`;
+}
+
+function nextQ(){
+  const {questions,idx} = quizState;
+  if(idx>=questions.length-1) showResults();
+  else {quizState.idx++;renderQuestion();}
+}
+function prevQ(){
+  if(quizState.idx>0){quizState.idx--;renderQuestion();}
+}
+function skipQ(){
+  nextQ();
+}
+
+function toggleBookmark(){
+  const q = quizState.questions[quizState.idx];
+  if(state.bookmarks.includes(q.id)) state.bookmarks=state.bookmarks.filter(id=>id!==q.id);
+  else state.bookmarks.push(q.id);
+  saveState();
+  updateStats();
+  const bm = document.getElementById('bookmark-btn');
+  bm.classList.toggle('bookmarked');
+  showToast(state.bookmarks.includes(q.id)?'🔖 Bookmarked!':'Bookmark removed');
+}
+
+function showResults(){
+  const {questions,answers,mode,points} = quizState;
+  let correct=0,wrong=0,skipped=0;
+  questions.forEach((q,i)=>{
+    if(answers[i]===undefined) skipped++;
+    else if(answers[i]===q.correctAnswer) correct++;
+    else wrong++;
+  });
+  const total = questions.length - skipped;
+  const pct = total>0?Math.round(correct/total*100):0;
+
+  if(pct===100 && total>=5) {
+    state.unlockedBadges.push('perfect');
+    saveState();
+  }
+
+  const emojis = pct>=90?'🏆':pct>=70?'🎉':pct>=50?'👍':'💪';
+  const msgs = pct>=90?'Outstanding performance!':pct>=70?'Great work! Keep it up!':pct>=50?'Solid effort! Practice makes perfect.':'Keep studying — you\'ve got this!';
+
+  document.getElementById('results-emoji').textContent = emojis;
+  document.getElementById('results-score').textContent = pct+'%';
+  document.getElementById('results-title').textContent = pct>=90?'Outstanding!':pct>=70?'Well Done!':pct>=50?'Keep Going!':'Don\'t Give Up!';
+  document.getElementById('results-sub').textContent = msgs;
+  document.getElementById('r-correct').textContent = correct;
+  document.getElementById('r-wrong').textContent = wrong;
+  document.getElementById('r-points').textContent = '+'+( points||0);
+
+  if(mode==='test'){
+    const reviewHtml = questions.map((q,i)=>{
+      const ans = answers[i];
+      const wasCorrect = ans===q.correctAnswer;
+      const wasSkipped = ans===undefined;
+      const icon = wasSkipped?'⏭️':wasCorrect?'✅':'❌';
+      return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span>${icon}</span>
+          <span style="font-size:13px;font-weight:500;color:var(--text)">${q.question}</span>
+        </div>
+        ${!wasSkipped?`<div style="font-size:12px;color:${wasCorrect?'var(--green)':'var(--red)'};margin-bottom:4px">Your answer: ${q.options[ans]}</div>`:'<div style="font-size:12px;color:var(--text3);margin-bottom:4px">Skipped</div>'}
+        ${!wasCorrect?`<div style="font-size:12px;color:var(--green);margin-bottom:6px">Correct: ${q.options[q.correctAnswer]}</div>`:''}
+        <div style="font-size:12px;color:var(--text2);background:var(--bg2);padding:8px 12px;border-radius:8px">${q.explanation}</div>
+      </div>`;
+    }).join('');
+    document.getElementById('review-section').innerHTML = `<div class="section-title" style="margin-top:24px">Review Answers</div>${reviewHtml}`;
+  } else {
+    document.getElementById('review-section').innerHTML = '';
+  }
+
+  if(pct>=70) confetti(20);
+  showView('results');
+  buildBadges();
+  buildWeakTopics();
+}
+
+function retryWrong(){
+  const wrong = quizState.questions.filter((q,i)=>quizState.answers[i]!==q.correctAnswer && quizState.answers[i]!==undefined);
+  if(!wrong.length){showToast('🎉 No wrong answers!');return;}
+  currentMode = quizState.mode;
+  quizState = {questions:[...wrong],idx:0,answers:{},mode:quizState.mode,category:'retry',label:'Retry Wrong',points:0};
+  showView('quiz');
+  renderQuestion();
+}
+
+// VIEW SWITCHING
+function showView(v){
+  const views = ['dashboard','mode-select','quiz','results'];
+  views.forEach(id=>{
+    const el = document.getElementById(`view-${id}`);
+    if(el) el.style.display = id===v?'block':'none';
+  });
+
+  const titles = {dashboard:'Dashboard','mode-select':'Choose Mode',quiz:'Quiz',results:'Results'};
+  document.getElementById('topbar-title').textContent = titles[v]||v;
+
+  // Update nav active
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if(v==='dashboard') document.getElementById('nav-dashboard').classList.add('active');
+
+  if(v==='dashboard'){
+    buildCategoryGrid();
+    updateStats();
+    buildBadges();
+    buildWeakTopics();
+  }
+
+  if(window.innerWidth<=768 && sidebarOpen) toggleSidebar();
+}
+
+function selectMode(m){
+  selectedMode = m;
+  document.getElementById('mc-practice').classList.toggle('selected',m==='practice');
+  document.getElementById('mc-test').classList.toggle('selected',m==='test');
+}
+
+function launchSelectedQuiz(){
+  startQuiz(selectedMode,'all');
+}
+
+// UI CONTROLS
+function toggleSidebar(){
+  const sb = document.getElementById('sidebar');
+  if(window.innerWidth<=768){
+    sb.classList.toggle('open');
+  } else {
+    sidebarOpen = !sidebarOpen;
+    sb.classList.toggle('collapsed',!sidebarOpen);
+  }
+}
+
+function toggleTheme(){
+  const d = document.documentElement;
+  d.setAttribute('data-theme', d.getAttribute('data-theme')==='dark'?'light':'dark');
+  document.querySelector('.theme-btn').textContent = d.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+}
+
+function toggleSearch(){
+  const o = document.getElementById('search-overlay');
+  o.style.display = o.style.display==='none'?'flex':'none';
+  if(o.style.display==='flex') setTimeout(()=>document.getElementById('search-input').focus(),100);
+}
+function closeSearch(e){if(e.target===e.currentTarget) toggleSearch();}
+
+function searchQuestions(val){
+  const container = document.getElementById('search-results');
+  if(!val.trim()){container.innerHTML='<div class="no-results">Start typing to search 183 questions...</div>';return;}
+  const results = QUESTIONS.filter(q=>q.question.toLowerCase().includes(val.toLowerCase())||q.options.some(o=>o.toLowerCase().includes(val.toLowerCase()))).slice(0,20);
+  if(!results.length){container.innerHTML='<div class="no-results">No questions found.</div>';return;}
+  container.innerHTML = results.map(q=>`
+    <div class="search-result-item" onclick="jumpToQuestion(${q.id})">
+      <div class="search-result-q">${q.question.substring(0,80)}${q.question.length>80?'...':''}</div>
+      <div class="search-result-cat">${CAT_ICONS[q.category]} ${q.category}</div>
+    </div>`).join('');
+}
+
+function jumpToQuestion(id){
+  toggleSearch();
+  const q = QUESTIONS.find(q=>q.id===id);
+  currentMode = 'practice';
+  quizState = {questions:[q,...QUESTIONS.filter(qq=>qq.category===q.category&&qq.id!==id).slice(0,9)],idx:0,answers:{},mode:'practice',category:q.category,label:q.category,points:0};
+  showView('quiz');
+  renderQuestion();
+}
+
+// CONFETTI
+function confetti(n=15){
+  const colors = ['#c84b31','#e8734a','#d4a843','#48b87a','#5b8de8','#f72585'];
+  for(let i=0;i<n;i++){
+    const p = document.createElement('div');
+    p.className='confetti-piece';
+    const drift = (Math.random()-0.5)*300;
+    p.style.cssText=`left:${Math.random()*100}%;background:${colors[i%colors.length]};animation-duration:${0.8+Math.random()*0.8}s;animation-delay:${Math.random()*0.3}s;--drift:${drift}px;border-radius:${Math.random()>0.5?'50%':'2px'}`;
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),2000);
+  }
+}
+
+// TOAST
+function showToast(msg){
+  const existing = document.querySelector('.toast');
+  if(existing) existing.remove();
+  const t = document.createElement('div');
+  t.className='toast';
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2500);
+}
+
+// Auto dark mode
+if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+  document.documentElement.setAttribute('data-theme','dark');
+  document.querySelector('.theme-btn').textContent='☀️';
+}
+
+// Keyboard nav
+document.addEventListener('keydown',e=>{
+  const v = document.getElementById('view-quiz');
+  if(v&&v.style.display!=='none'){
+    if(e.key==='ArrowRight'||e.key==='Enter'&&e.target.tagName!=='BUTTON') nextQ();
+    if(e.key==='ArrowLeft') prevQ();
+    if(['1','2','3','4'].includes(e.key)&&!e.ctrlKey) answerQ(parseInt(e.key)-1);
+  }
+  if(e.key==='Escape') toggleSearch();
+});
+
+init();
+</script>
+</body>
+</html>
